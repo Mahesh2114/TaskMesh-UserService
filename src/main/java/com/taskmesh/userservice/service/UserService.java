@@ -70,7 +70,7 @@ public class UserService {
             throw new RuntimeException("Invalid credentials");
 
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getRole(),user.getId());
         return new Auth(token, 3600);
     }
 

@@ -22,9 +22,9 @@ public class JWTUtility {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, Role role) {
+    public String generateToken(Role role, Long userId) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userId.toString())
                 .claim("role", role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
@@ -32,12 +32,14 @@ public class JWTUtility {
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    public Long extractUserId(String token) {
+        return Long.parseLong(
+                Jwts.parserBuilder()
+                        .setSigningKey(getSigningKey())
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody()
+                        .getSubject()
+        );
     }
 }

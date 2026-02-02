@@ -39,21 +39,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String username;
+        Long userId;
 
         try {
-            username = jwtUtil.extractUsername(token);
+            userId = jwtUtil.extractUserId(token);
         } catch (Exception e) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        User user = userRepository.findByUsername(username).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user != null) {
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            user.getUsername(),
+                            user.getId().toString(),
                             null,
                             List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
                     );

@@ -40,9 +40,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}/deactivate")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN','MANAGER','USER')")
     public ResponseEntity<?> deactivate(@PathVariable Long id) {
         userService.deactivate(id);
         return ResponseEntity.ok("User deactivated");
+    }
+    @GetMapping("/{userId}/validate")
+    @PreAuthorize("hasAnyRole('MANAGER','USER')")
+    public ResponseEntity<Void> validateUser(@PathVariable Long userId) {
+        return ResponseEntity.ok().build();
     }
 }
